@@ -1,5 +1,6 @@
-/* باينباغ — page transitions from the Figma prototype + WhatsApp link.
-   Loaded (blocking) in <head> so it can catch the "pagereveal" event. */
+/* باينباغ — loading screen, page transitions from the Figma prototype + WhatsApp link.
+   Loaded (blocking) in <head> so it can show the loader before the first paint
+   and catch the "pagereveal" event. */
 (function () {
   'use strict';
 
@@ -8,6 +9,29 @@
 
   var KEY = 'bainbag-vt';
   var root = document.documentElement;
+
+  // Loading screen: stays up until every image, stylesheet, script and font has loaded.
+  var LOADER_SAFETY_MS = 30000; // never trap visitors behind the loader if a request hangs
+  var loaded = false;
+  root.classList.add('is-loading');
+  root.setAttribute('aria-busy', 'true');
+
+  function hideLoader() {
+    if (loaded) return;
+    loaded = true;
+    root.classList.add('is-loaded');
+    root.removeAttribute('aria-busy');
+  }
+
+  window.addEventListener('load', function () {
+    var fonts = document.fonts && document.fonts.ready;
+    if (fonts) fonts.then(hideLoader, hideLoader);
+    else hideLoader();
+  });
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted) hideLoader(); // restored from the back/forward cache
+  });
+  setTimeout(hideLoader, LOADER_SAFETY_MS);
 
   function store(type) {
     try {
