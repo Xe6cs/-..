@@ -1,0 +1,12 @@
+# Figma source (≈400 MB, over GitHub's 100 MB file limit)
+*.fig
+
+# Local tooling
+.claude/
+.netlify/
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

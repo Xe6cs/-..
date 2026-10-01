@@ -1,0 +1,796 @@
+/* ==========================================================================
+   باينباغ — converted 1:1 from the Figma design (440 × 956 artboards)
+   1rem = 10 design px. On phones narrower than 440px the whole design
+   scales down proportionally; from 440px up, 1rem = 10px and the layout
+   grows with more columns (tablet / desktop).
+   ========================================================================== */
+
+:root {
+  --bg: #f1f4f6;
+  --navy: #0c2c3b;
+  --muted: #596b8b;
+  --hero-sub: #ccdcea;
+  --card-bg: #f2f3f4;
+  --tile-bg: #f9fafb;
+  --chip-border: #dae3f1;
+  --chip-active-bg: #e5f4fe;
+  --chip-active-border: #b7e2fd;
+  --chip-active-text: #21b1fb;
+  --wrap: 114rem;
+  --font: "IBM Plex Sans Condensed", "Noto Sans Arabic", system-ui, sans-serif;
+}
+
+html {
+  font-size: 10px;
+  font-size: min(calc(100vw / 44), 10px);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--bg);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--navy);
+  font-family: var(--font);
+  font-size: 1.6rem;
+  line-height: 1.3;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+
+img {
+  display: block;
+  max-width: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+p,
+figure {
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--chip-active-text);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.wrap {
+  position: relative;
+  width: 100%;
+  max-width: var(--wrap);
+  margin: 0 auto;
+}
+
+/* ---------- shared pieces ---------- */
+
+.icon-btn {
+  display: block;
+  flex: none;
+}
+
+.icon-btn img {
+  width: 100%;
+  height: 100%;
+}
+
+.menu-btn,
+.close-btn {
+  width: 4.7rem;
+  height: 4.6rem;
+}
+
+.back-btn {
+  width: 4.6rem;
+  height: 4.7rem;
+}
+
+/* the design flips the arrow horizontally for the back button */
+.back-btn img {
+  transform: scaleX(-1);
+}
+
+.brand {
+  display: block;
+  width: 5.8rem;
+  height: 6.9rem;
+}
+
+.brand img {
+  width: 100%;
+  height: 100%;
+}
+
+.kicker {
+  font-size: 1.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.page-title {
+  font-size: 3.4rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+/* WhatsApp contact button */
+.contact {
+  position: relative;
+  display: block;
+  height: 7.8rem;
+  margin: 0 1.8rem;
+  padding: 0.8rem 0.7rem 0.8rem 0.8rem;
+  background: #fff;
+  border-radius: 2.9rem;
+}
+
+.contact-inner {
+  position: relative;
+  display: block;
+  height: 100%;
+  background: var(--navy);
+  border-radius: 3rem;
+}
+
+.contact-label {
+  position: absolute;
+  top: 1.3rem;
+  right: 1.9rem;
+  font-size: 2.4rem;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.contact-icon {
+  position: absolute;
+  top: 0.52rem;
+  left: 0.92rem;
+  width: 5.1rem;
+  height: 5.2rem;
+}
+
+.credit {
+  margin-top: 0.8rem;
+  padding-right: 0.6rem;
+  font-family: "Inter", var(--font);
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+  color: #000;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* category cards (landing + other products) */
+.cats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1rem;
+  row-gap: 0.9rem;
+  align-items: start;
+  margin: 0 1.8rem;
+}
+
+.cat {
+  --ar: 197 / 254;
+  --r: 2.6rem;
+  --label-r: 1.2rem;
+  --label-b: 1.1rem;
+  --go-b: 1.3rem;
+  --go: 3.9rem;
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: var(--ar);
+  border-radius: var(--r);
+  background: var(--card-bg);
+  color: #fff;
+  isolation: isolate;
+}
+
+.cat-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* "card effect": navy fade at the bottom */
+.cat::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(12, 44, 59, 0) 69%, #0c2c3b 95%);
+}
+
+/* 1px white inside stroke, drawn above the content like in Figma */
+.cat::after,
+.tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px #fff;
+  pointer-events: none;
+}
+
+.cat-label {
+  position: absolute;
+  z-index: 2;
+  right: var(--label-r);
+  bottom: var(--label-b);
+  font-size: 1.7rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cat-label span {
+  display: block;
+}
+
+.cat-go {
+  position: absolute;
+  z-index: 2;
+  left: 1.1rem;
+  bottom: var(--go-b);
+  width: var(--go);
+  height: var(--go);
+}
+
+/* per-card values taken from the design */
+.cat--9cm { --ar: 197 / 248; --r: 2.4rem; --label-r: 1.3rem; --label-b: 1rem; --go-b: 1rem; }
+.cat--7cm { --ar: 197 / 249; --r: 2.5rem; --label-r: 1.1rem; --label-b: 0.9rem; --go-b: 1rem; --go: 4rem; }
+.cat--5cm { --label-r: 1.2rem; --label-b: 1.1rem; }
+.cat--other { --label-r: 1.6rem; --label-b: 1.8rem; }
+.cat--pajama { --ar: 197 / 248; --r: 2.4rem; --label-r: 1.6rem; --label-b: 1.2rem; --go-b: 1rem; }
+.cat--bowtie { --ar: 197 / 249; --r: 2.5rem; --label-r: 1.5rem; --label-b: 1.3rem; --go-b: 0.9rem; --go: 4rem; }
+.cat--suspenders { --label-r: 1.6rem; --label-b: 1.8rem; }
+
+/* ==========================================================================
+   Landing page
+   ========================================================================== */
+
+.home-main {
+  padding-top: 5.4rem;
+}
+
+.home-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: 6.9rem;
+  padding: 0 2rem 0 2.2rem;
+}
+
+.home-head .menu-btn {
+  margin-top: 1.2rem;
+}
+
+.hero {
+  position: relative;
+  height: 15.32rem;
+  margin: 1.2rem 1.7rem 0 1.6rem;
+  overflow: hidden;
+  background: var(--navy);
+  border-radius: 2.5rem;
+  box-shadow: 0 0 0 1px #fff;
+}
+
+.hero-arc {
+  position: absolute;
+  top: 0.6rem;
+  left: 0;
+  width: 8.362rem;
+  height: 14.116rem;
+}
+
+.hero-text {
+  position: absolute;
+  top: 3.06rem;
+  right: 1.34rem;
+  text-align: right;
+}
+
+.hero-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.hero-sub {
+  padding-right: 0.2rem;
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 2.1rem;
+  letter-spacing: -0.02em;
+  color: var(--hero-sub);
+  white-space: nowrap;
+}
+
+.hero-title + .hero-sub {
+  margin-top: 1.36rem;
+}
+
+.hero-sub + .hero-sub {
+  margin-top: 0.2rem;
+}
+
+.home .cats {
+  margin-top: 1.38rem;
+}
+
+.home .contact {
+  margin-top: 1.6rem;
+}
+
+.home .credit {
+  padding-bottom: 2.5rem;
+}
+
+/* entrance: "Landing page (before → after)" — opacity 0 → 1, 0.4s linear */
+.intro .home-main {
+  animation: bb-fade-in 0.4s linear both;
+}
+
+@keyframes bb-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   Category / product pages
+   ========================================================================== */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 27.6rem;
+  background: var(--bg);
+  border-radius: 0 0 4rem 4rem;
+}
+
+.topbar .menu-btn {
+  position: absolute;
+  top: 6.6rem;
+  left: 2.2rem;
+}
+
+.topbar .back-btn {
+  position: absolute;
+  top: 6.4rem;
+  right: 2rem;
+}
+
+.topbar .brand {
+  position: absolute;
+  top: 5rem;
+  left: 50%;
+  margin-left: -2.9rem;
+}
+
+.topbar .kicker {
+  position: absolute;
+  top: 12.8rem;
+  right: 2.3rem;
+}
+
+.topbar .page-title {
+  position: absolute;
+  top: 15.5rem;
+  right: 2.3rem;
+}
+
+.tabs {
+  position: absolute;
+  top: 21.6rem;
+  right: 2rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tabs--ties {
+  right: 1.9rem;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--w, 13rem);
+  height: 4.4rem;
+  background: #fff;
+  border-radius: 2.7rem;
+  box-shadow: inset 0 0 0 1px var(--chip-border);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+.tab.is-active {
+  background: var(--chip-active-bg);
+  box-shadow: inset 0 0 0 1px var(--chip-active-border);
+  color: var(--chip-active-text);
+}
+
+.tab--ink:not(.is-active) {
+  color: #000;
+}
+
+/* "منتجات اخرى" page: shorter bar, no kicker */
+.topbar--short {
+  height: 26.5rem;
+}
+
+.topbar--short .brand {
+  top: 4.5rem;
+}
+
+.topbar--short .page-title {
+  top: 14.4rem;
+}
+
+.topbar--short .tabs {
+  top: 20.5rem;
+}
+
+/* product grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem 0.8rem;
+  padding: 0 2rem 9.5rem;
+}
+
+.tile {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 196 / 215;
+  background: var(--tile-bg);
+  border-radius: 2.2rem;
+}
+
+.tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tile--text {
+  aspect-ratio: auto;
+  grid-row: span 2;
+  min-height: 45.6rem;
+  padding: 0.8rem 1.4rem 0 1.5rem;
+}
+
+.tile--text p {
+  font-size: 1.7rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--navy);
+  text-align: right;
+}
+
+.products .wrap {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+.others .cats {
+  margin-top: 0;
+  padding-bottom: 5.3rem;
+}
+
+/* fixed WhatsApp bar */
+.bottombar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  flex: none;
+  height: 12.6rem;
+  margin-top: auto;
+  background: var(--bg);
+  border-radius: 4rem 4rem 0 0;
+}
+
+/* ==========================================================================
+   Side menu
+   ========================================================================== */
+
+.menu-page .wrap {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+  max-width: 76rem;
+}
+
+.menu-head {
+  position: relative;
+  height: 21.4rem;
+  flex: none;
+}
+
+.menu-head .close-btn {
+  position: absolute;
+  top: 6.6rem;
+  left: 2.2rem;
+}
+
+.menu-head .brand {
+  position: absolute;
+  top: 5rem;
+  right: 2.17rem;
+  width: 5.83rem;
+}
+
+.menu-head .kicker {
+  position: absolute;
+  top: 12.8rem;
+  right: 2.3rem;
+}
+
+.menu-head .page-title {
+  position: absolute;
+  top: 15.5rem;
+  right: 2.3rem;
+}
+
+.menu-list {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0 2.3rem 0 1.8rem;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-item {
+  position: relative;
+  display: block;
+  height: 6.8rem;
+  background: #fff;
+  border-radius: 2rem;
+}
+
+.menu-item-label {
+  position: absolute;
+  top: 2.1rem;
+  right: 1.7rem;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.09em;
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+.menu-item-chevron {
+  position: absolute;
+  top: 2.4rem;
+  left: 2.8rem;
+  width: 1.4rem;
+  height: 2.2rem;
+}
+
+.menu-map {
+  display: block;
+  height: 21.6rem;
+  margin: 1rem 2.3rem 0 1.8rem;
+  overflow: hidden;
+  border-radius: 1.3rem;
+}
+
+.menu-map img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.menu-foot {
+  margin-top: auto;
+  padding-top: 9.4rem;
+}
+
+.menu-foot .credit {
+  padding-bottom: 2.5rem;
+}
+
+/* ==========================================================================
+   Phone-only placements (the design's 2-column grids)
+   ========================================================================== */
+
+@media (max-width: 639.98px) {
+  .grid > .at-left,
+  .cats > .at-left {
+    grid-column: 2;
+  }
+}
+
+/* ==========================================================================
+   Tablet
+   ========================================================================== */
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .others .cats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .others .cat {
+    --ar: 197 / 254;
+  }
+
+  .menu-map {
+    height: auto;
+    aspect-ratio: 399 / 216;
+  }
+}
+
+@media (min-width: 860px) {
+  .home .cats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .home .cat {
+    --ar: 197 / 254;
+  }
+}
+
+/* ==========================================================================
+   Desktop
+   ========================================================================== */
+
+@media (min-width: 1000px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .others .cats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+/* short landscape screens: keep the bars in the flow so content stays visible */
+@media (max-height: 599.98px) {
+  .topbar,
+  .bottombar {
+    position: relative;
+  }
+}
+
+/* ==========================================================================
+   Page transitions — the prototype's interactions (all linear)
+   ========================================================================== */
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-group(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.4s;
+  animation-timing-function: linear;
+}
+
+/* PUSH_FROM_BOTTOM */
+html:active-view-transition-type(push-up)::view-transition-old(root) {
+  animation: bb-to-top 0.4s linear both;
+  mix-blend-mode: normal;
+}
+
+html:active-view-transition-type(push-up)::view-transition-new(root) {
+  animation: bb-from-bottom 0.4s linear both;
+  mix-blend-mode: normal;
+}
+
+/* PUSH_FROM_TOP */
+html:active-view-transition-type(push-down)::view-transition-old(root) {
+  animation: bb-to-bottom 0.4s linear both;
+  mix-blend-mode: normal;
+}
+
+html:active-view-transition-type(push-down)::view-transition-new(root) {
+  animation: bb-from-top 0.4s linear both;
+  mix-blend-mode: normal;
+}
+
+/* MOVE_FROM_LEFT (open the side menu) */
+html:active-view-transition-type(menu-in)::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html:active-view-transition-type(menu-in)::view-transition-new(root) {
+  animation: bb-from-left 0.4s linear both;
+  mix-blend-mode: normal;
+}
+
+/* MOVE_OUT_TO_LEFT (leave the side menu) */
+html:active-view-transition-type(menu-out)::view-transition-old(root),
+html:active-view-transition-type(menu-out-fast)::view-transition-old(root) {
+  z-index: 1;
+  animation: bb-to-left 0.4s linear both;
+  mix-blend-mode: normal;
+}
+
+html:active-view-transition-type(menu-out-fast)::view-transition-old(root) {
+  animation-duration: 0.3s;
+}
+
+html:active-view-transition-type(menu-out)::view-transition-new(root),
+html:active-view-transition-type(menu-out-fast)::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@keyframes bb-to-top { to { transform: translateY(-100%); } }
+@keyframes bb-from-bottom { from { transform: translateY(100%); } }
+@keyframes bb-to-bottom { to { transform: translateY(100%); } }
+@keyframes bb-from-top { from { transform: translateY(-100%); } }
+@keyframes bb-from-left { from { transform: translateX(-100%); } }
+@keyframes bb-to-left { to { transform: translateX(-100%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  @view-transition {
+    navigation: none;
+  }
+}
