@@ -3,6 +3,7 @@
 
 # Local tooling
 .claude/
+.netlify/
 node_modules/
 
 # OS files
