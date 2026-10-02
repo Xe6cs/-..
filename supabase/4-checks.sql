@@ -1,7 +1,20 @@
 -- =============================================================================
--- Safety checks — run any time in SQL Editor. Changes nothing.
+-- باينباغ — FILE 4 of 4: safety checks
+-- Run LAST (and any time later). Changes nothing.
+-- Checks public.admins, public.categories, public.products, public.site_settings
+-- and the "site-images" storage bucket.
 -- Every line of the result should say OK. Anything saying FAIL needs attention.
 -- =============================================================================
+
+-- Stop with a clear message if file 1 has not been run yet.
+do $$
+begin
+  if to_regclass('public.categories') is null then
+    raise exception 'الجداول غير موجودة بعد. شغّل الملف 1-schema.sql أولاً (Run 1-schema.sql first)';
+  end if;
+end
+$$;
+
 with checks (check_name, ok) as (
   values
     ('RLS on admins',        (select relrowsecurity from pg_class where oid = 'public.admins'::regclass)),

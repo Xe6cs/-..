@@ -1,6 +1,9 @@
 -- =============================================================================
--- باينباغ — initial database schema
--- Run once in Supabase: SQL Editor → New query → paste this whole file → Run.
+-- باينباغ — FILE 1 of 4: tables, security rules and image storage
+-- Run FIRST, once: Supabase → SQL Editor → New query → paste this whole file → Run.
+-- Creates: public.admins, public.categories, public.products,
+--          public.site_settings (with its single row), storage bucket "site-images".
+-- If any statement fails, Supabase undoes the whole file, so nothing is left half-done.
 --
 -- Security model
 --   * Visitors (role "anon") can only READ visible sections, products and the
@@ -10,6 +13,15 @@
 --     ever switched on, a new account is not an admin until it is added to
 --     public.admins by hand.
 -- =============================================================================
+
+-- Stop safely (changing nothing) if this file was already run.
+do $$
+begin
+  if to_regclass('public.categories') is not null then
+    raise exception 'هذا الملف شُغّل من قبل والجداول موجودة. انتقل إلى الملف 2-seed.sql (File 1 was already run: go to 2-seed.sql)';
+  end if;
+end
+$$;
 
 -- Helpers live in a private schema that the public API does not expose.
 create schema if not exists private;

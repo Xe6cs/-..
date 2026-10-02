@@ -1,14 +1,27 @@
 -- =============================================================================
--- باينباغ — starting data: the site's current sections and texts
--- Run once, after the schema (migrations/20261002000000_initial_schema.sql).
+-- باينباغ — FILE 2 of 4: the site's current sections and texts
+-- Run SECOND, after 1-schema.sql: SQL Editor → New query → paste → Run.
+-- Adds the 8 sections to public.categories. The settings row with the home-page
+-- texts was already created by file 1 (public.site_settings).
 -- Products and images are NOT added here; they move over in a later stage.
+-- Safe to run again: sections that already exist are skipped.
 -- =============================================================================
+
+-- Stop with a clear message if file 1 has not been run yet.
+do $$
+begin
+  if to_regclass('public.categories') is null then
+    raise exception 'الجداول غير موجودة بعد. شغّل الملف 1-schema.sql أولاً (Run 1-schema.sql first)';
+  end if;
+end
+$$;
 
 -- The two groups
 insert into public.categories (slug, name, subtitle, show_on_home, sort_order)
 values
   ('ties',           'ربطات العنق', null, false, 0),
-  ('other-products', 'منتجات اخرى', null, true,  4);
+  ('other-products', 'منتجات اخرى', null, true,  4)
+on conflict (slug) do nothing;
 
 -- Tie sizes (shown on the home page, and as tabs on each tie page)
 insert into public.categories (parent_id, slug, name, subtitle, show_on_home, sort_order)
@@ -19,7 +32,8 @@ cross join (values
   ('ties-9cm', '9 سنتميتر', 2),
   ('ties-5cm', '5 سنتميتر', 3)
 ) as v (slug, name, sort_order)
-where g.slug = 'ties';
+where g.slug = 'ties'
+on conflict (slug) do nothing;
 
 -- Other products (cards on the "منتجات اخرى" page, and tabs on each page)
 insert into public.categories (parent_id, slug, name, subtitle, description, sort_order)
@@ -41,4 +55,5 @@ cross join (values
   ('bow-ties',   'بابيون',      null, 2),
   ('suspenders', 'شيال بنطرون', null, 3)
 ) as v (slug, name, description, sort_order)
-where g.slug = 'other-products';
+where g.slug = 'other-products'
+on conflict (slug) do nothing;
