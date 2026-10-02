@@ -1,6 +1,10 @@
 # Figma source (≈400 MB, over GitHub's 100 MB file limit)
 *.fig
 
+# Supabase settings: kept in Netlify environment variables, never in the repository
+.env
+assets/js/supabase-config.js
+
 # Local tooling
 .claude/
 .netlify/

@@ -1,6 +1,9 @@
-# Netlify: static site, no build step — the repository root is published as-is.
+# Netlify: static site published from the repository root. The only build step
+# writes assets/js/supabase-config.js from the SUPABASE_URL and
+# SUPABASE_PUBLISHABLE_KEY environment variables (set in the Netlify dashboard).
 [build]
   publish = "."
+  command = "node scripts/write-supabase-config.mjs"
 
 # Basic security headers for every page.
 [[headers]]
