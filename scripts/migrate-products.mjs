@@ -164,36 +164,72 @@ const reader = admin || visitor;
 const ids = await sectionIds(reader);
 const toCheck = mode === '--verify' ? null : chosen;
 
+// Photos: each is in its section folder and opens publicly, byte-for-byte identical
+// to the original. Small runs list every photo; big runs list only problems, then
+// one summary line per section folder (which must hold exactly the expected files).
+const verbose = (toCheck || []).length <= 10;
 console.log('Photos in the "site-images" bucket:');
-for (const p of toCheck || []) {
-  const folder = p.storagePath.split('/').slice(0, -1).join('/');
-  const name = p.storagePath.split('/').pop();
-  if (admin) {
-    const { data, error } = await admin.storage.from(BUCKET).list(folder, { search: name });
-    check(`${p.storagePath} is in the bucket`, !error && data?.some(o => o.name === name));
+const folderFiles = {};
+if (admin) {
+  for (const slug of new Set((toCheck || []).map(p => p.slug))) {
+    const { data, error } = await admin.storage.from(BUCKET).list(`products/${slug}`, { limit: 1000 });
+    folderFiles[slug] = error ? [] : data.filter(o => o.id).map(o => o.name);
   }
-  const publicUrl = visitor.storage.from(BUCKET).getPublicUrl(p.storagePath).data.publicUrl;
-  const res = await fetch(publicUrl);
+}
+const photosOk = {};
+for (const p of toCheck || []) {
+  const name = p.storagePath.split('/').pop();
+  const inBucket = !admin || folderFiles[p.slug].includes(name);
+  const res = await fetch(visitor.storage.from(BUCKET).getPublicUrl(p.storagePath).data.publicUrl);
   const body = res.ok ? Buffer.from(await res.arrayBuffer()) : Buffer.alloc(0);
-  const local = readFileSync(new URL(p.localPath, ROOT));
-  check(`${p.storagePath} opens for visitors`, res.ok && res.headers.get('content-type') === 'image/webp' && body.equals(local),
-    res.ok ? `${Math.round(body.length / 1024)} KB, identical to the original` : `HTTP ${res.status}`);
+  const opens = res.ok && res.headers.get('content-type') === 'image/webp'
+    && body.equals(readFileSync(new URL(p.localPath, ROOT)));
+  photosOk[p.slug] = (photosOk[p.slug] || 0) + (inBucket && opens ? 1 : 0);
+  if (verbose || !(inBucket && opens)) {
+    check(`${p.storagePath} is in the bucket and opens for visitors`, inBucket && opens,
+      opens ? `${Math.round(body.length / 1024)} KB, identical to the original`
+        : `HTTP ${res.status}${inBucket ? '' : ', missing from the bucket'}`);
+  }
+}
+if (!verbose) {
+  for (const slug of new Set(toCheck.map(p => p.slug))) {
+    const expected = toCheck.filter(p => p.slug === slug).length;
+    const files = folderFiles[slug] || [];
+    check(`products/${slug}/  ${photosOk[slug]} of ${expected} open correctly, ${files.length} file(s) in the folder`,
+      photosOk[slug] === expected && files.length === expected);
+  }
 }
 
-console.log('\nRows in public.products:');
-const slugs = toCheck ? [...new Set(toCheck.map(p => p.slug))] : PAGES.map(([, s]) => s);
-for (const slug of slugs) {
-  const { data, error } = await reader.from('products')
-    .select('image_path, sort_order, is_visible').eq('category_id', ids[slug]).order('sort_order');
-  if (error) { check(`read products of ${slug}`, false, error.message); continue; }
-  const expected = toCheck ? toCheck.filter(p => p.slug === slug) : null;
-  if (expected) {
-    const same = expected.every(p => data.some(r => r.image_path === p.storagePath && r.sort_order === p.sortOrder && r.is_visible));
-    check(`${slug}: ${data.length} row(s), order ${data.map(r => r.sort_order).join(', ')}`, same && data.length >= expected.length);
-  } else {
-    console.log(`        ${slug.padEnd(11)} ${data.length} row(s)`);
+console.log('\nRows in public.products, per section:');
+const { data: rows, error: rowsError } = await reader.from('products')
+  .select('category_id, image_path, sort_order, is_visible').order('sort_order');
+if (rowsError) stop(`Could not read the products: ${rowsError.message}`);
+const slugOf = Object.fromEntries(Object.entries(ids).map(([slug, id]) => [id, slug]));
+const strict = mode === '--all';
+for (const [, slug] of PAGES) {
+  const onSite = all.filter(p => p.slug === slug);
+  const inDb = rows.filter(r => slugOf[r.category_id] === slug);
+  const expected = toCheck ? toCheck.filter(p => p.slug === slug) : [];
+  if (!toCheck || (!strict && !expected.length)) {
+    console.log(`        ${slug.padEnd(11)} ${inDb.length} of ${onSite.length} on the site`);
+    continue;
   }
+  const allThere = expected.every(p =>
+    inDb.some(r => r.image_path === p.storagePath && r.sort_order === p.sortOrder && r.is_visible));
+  const orders = inDb.map(r => r.sort_order);
+  const inOrder = orders.every((o, i) => o === i + 1);
+  check(`${slug.padEnd(11)} ${inDb.length} of ${onSite.length} on the site, order ${inOrder ? `1–${inDb.length}` : orders.join(',')}`,
+    allThere && inOrder && (strict ? inDb.length === onSite.length : inDb.length >= expected.length));
 }
+
+console.log('\nTotals and duplicates:');
+if (strict || mode === '--verify') {
+  check(`the products table holds ${all.length} products`, rows.length === all.length, `${rows.length} found`);
+}
+check('no photo is listed twice', new Set(rows.map(r => r.image_path)).size === rows.length);
+check('no two products share a position in the same section',
+  new Set(rows.map(r => `${r.category_id}:${r.sort_order}`)).size === rows.length);
+check('every product belongs to an existing section', rows.every(r => slugOf[r.category_id]));
 
 console.log('\nLocks for visitors (tested with the public key, exactly like the website):');
 const NOBODY = '00000000-0000-0000-0000-000000000000';
@@ -216,6 +252,22 @@ const testPath = 'permission-test/visitor-upload.webp';
 const vUp = await visitor.storage.from(BUCKET).upload(testPath, pixel, { contentType: 'image/webp' });
 if (!vUp.error && admin) await admin.storage.from(BUCKET).remove([testPath]);
 check('visitors cannot upload photos', !!vUp.error, vUp.error ? '' : 'UPLOAD WAS ACCEPTED, removed again');
+const authSettings = await fetch(`${url}/auth/v1/settings`, { headers: { apikey: publishableKey } })
+  .then(r => r.json()).catch(() => ({}));
+check('nobody can create an account (public sign-up is off)', authSettings.disable_signup === true);
+
+// Read-only: the admin setup is still in place. (Writing as the admin is not tested
+// here, because that would need the admin's password.)
+if (admin) {
+  console.log('\nAdmin account (read-only check):');
+  const { data: admins, error: adminsError } = await admin.from('admins').select('user_id');
+  check('exactly one account in public.admins', !adminsError && admins.length === 1,
+    adminsError?.message || `${admins.length} found`);
+  if (!adminsError && admins.length) {
+    const { data, error } = await admin.auth.admin.getUserById(admins[0].user_id);
+    check('that account exists and its email is confirmed', !error && !!data?.user?.email_confirmed_at, error?.message || '');
+  }
+}
 
 console.log(`\n${ok} OK, ${bad} FAIL`);
 process.exit(bad ? 1 : 0);
