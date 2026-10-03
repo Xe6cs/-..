@@ -1,0 +1,9 @@
+{
+  "name": "bainbag-scripts",
+  "private": true,
+  "description": "Local maintenance scripts. Not used by the website or the Netlify build.",
+  "type": "module",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.2"
+  }
+}

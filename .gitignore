@@ -5,6 +5,10 @@
 .env
 assets/js/supabase-config.js
 
+# Local-only secrets (e.g. the temporary Supabase secret key for moving products)
+.env.local
+.env.*.local
+
 # Local tooling
 .claude/
 .netlify/
