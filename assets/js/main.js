@@ -1,11 +1,9 @@
-/* باينباغ — loading screen, page transitions from the Figma prototype + WhatsApp link.
+/* باينباغ — loading screen and page transitions from the Figma prototype.
    Loaded (blocking) in <head> so it can show the loader before the first paint
-   and catch the "pagereveal" event. */
+   and catch the "pagereveal" event. The WhatsApp number now comes from the site
+   settings (edited in /admin) — see settings.js. */
 (function () {
   'use strict';
-
-  /* ضع رقم الواتساب هنا بالصيغة الدولية بدون + أو أصفار، مثال: '9647701234567' */
-  var WHATSAPP_NUMBER = '';
 
   var KEY = 'bainbag-vt';
   var root = document.documentElement;
@@ -101,11 +99,5 @@
       e.preventDefault();
       location.replace(a.href);
     }
-  });
-
-  document.addEventListener('DOMContentLoaded', function () {
-    if (!WHATSAPP_NUMBER) return;
-    var links = document.querySelectorAll('a.contact');
-    for (var i = 0; i < links.length; i++) links[i].href = 'https://wa.me/' + WHATSAPP_NUMBER;
   });
 })();

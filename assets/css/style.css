@@ -654,6 +654,12 @@ figure {
   border-radius: 1.3rem;
 }
 
+/* when a map link is set in /admin, the image is wrapped in a link of the same size */
+.menu-map a {
+  display: block;
+  height: 100%;
+}
+
 .menu-map img {
   width: 100%;
   height: 100%;
