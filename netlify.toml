@@ -14,6 +14,16 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
 
+# Admin panel: never indexed, always revalidated, and a strict Content Security
+# Policy: only this site's own scripts and styles; data and images only from
+# this site and Supabase (blob: is for previewing photos before upload).
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-cache"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+
 # Images and icons rarely change: cache them for a week.
 [[headers]]
   for = "/assets/img/*"

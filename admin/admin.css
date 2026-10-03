@@ -1,0 +1,540 @@
+/* باينباغ — admin panel. Deliberately looks different from the store: neutral
+   dashboard style, system fonts (no external requests), phone first. */
+
+:root {
+  --bg: #f3f4f6;
+  --card: #ffffff;
+  --ink: #111827;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --brand: #0c2c3b;
+  --accent: #21b1fb;
+  --danger: #c62828;
+  --ok: #15803d;
+  --radius: 12px;
+  --font: system-ui, -apple-system, "Segoe UI", Tahoma, "Noto Sans Arabic", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.5 var(--font);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+h1,
+h2 {
+  margin: 0 0 4px;
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: 20px;
+}
+
+h2 {
+  font-size: 18px;
+}
+
+p {
+  margin: 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.hint {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+/* ---------- buttons & fields ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  font: 600 15px/1 var(--font);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+}
+
+.btn-ghost {
+  border-color: var(--line);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+.btn-danger-outline {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-small {
+  min-height: 34px;
+  padding: 0 10px;
+  font-size: 13px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.field > span {
+  color: var(--ink);
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+input[type="search"],
+select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  font: 400 16px/1.4 var(--font); /* 16px keeps iPhone from zooming in */
+}
+
+input:focus-visible,
+select:focus-visible,
+.btn:focus-visible,
+.view-tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+input[type="file"] {
+  font: 400 14px var(--font);
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  font-weight: 600;
+}
+
+.check input {
+  width: 20px;
+  height: 20px;
+}
+
+.form-error {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fdecec;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+fieldset {
+  margin: 20px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  padding: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ---------- loading & login ---------- */
+
+.boot {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  color: var(--muted);
+}
+
+.login {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+}
+
+.login-card .field {
+  text-align: start;
+}
+
+.login-card .btn {
+  margin-top: 20px;
+}
+
+.login-logo {
+  display: block;
+  margin: 0 auto 12px;
+}
+
+/* ---------- app shell ---------- */
+
+.app-bar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--brand);
+  color: #fff;
+}
+
+.app-bar img {
+  flex: none;
+  padding: 3px;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.app-title {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.app-title span {
+  overflow: hidden;
+  color: #cbd5e1;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: start;
+}
+
+.app-bar .btn {
+  min-height: 36px;
+  padding: 0 10px;
+  border-color: rgba(255, 255, 255, 0.35);
+  background: transparent;
+  color: #fff;
+  font-size: 13px;
+}
+
+.view-tabs {
+  display: flex;
+  gap: 4px;
+  max-width: 1200px;
+  margin: 12px auto 0;
+  padding: 0 16px;
+}
+
+.view-tab {
+  flex: 1;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  font: 600 15px var(--font);
+  cursor: pointer;
+}
+
+.view-tab.is-active {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: #fff;
+}
+
+.views {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 16px 48px;
+}
+
+/* ---------- products ---------- */
+
+.toolbar {
+  display: grid;
+  gap: 10px;
+}
+
+.toolbar .field {
+  margin-top: 0;
+}
+
+.toolbar .btn {
+  align-self: end;
+}
+
+.summary {
+  margin: 14px 0 10px;
+  font-weight: 700;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.product-card {
+  display: grid;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.product-card.is-hidden .product-thumb img {
+  opacity: 0.35;
+}
+
+.product-thumb {
+  position: relative;
+  aspect-ratio: 196 / 215;
+  background: #f9fafb;
+}
+
+.product-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badge {
+  position: absolute;
+  top: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.badge-position {
+  right: 8px;
+  background: rgba(17, 24, 39, 0.75);
+  color: #fff;
+}
+
+.badge-hidden {
+  left: 8px;
+  background: #fde68a;
+  color: #78350f;
+}
+
+.product-meta {
+  padding: 8px 10px 0;
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 8px 10px 10px;
+}
+
+.product-actions .btn-move {
+  font-size: 16px;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  padding: 40px 16px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ---------- dialogs ---------- */
+
+.dialog {
+  width: min(460px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  padding: 20px;
+  border: 0;
+  border-radius: 16px;
+  color: var(--ink);
+}
+
+.dialog::backdrop {
+  background: rgba(17, 24, 39, 0.55);
+}
+
+.dialog p {
+  margin-top: 10px;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.dialog-actions .btn {
+  flex: 1;
+}
+
+.dialog-actions-stack {
+  flex-direction: column;
+}
+
+.tile-preview {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  width: 160px;
+  aspect-ratio: 196 / 215;
+  border: 1px dashed #d1d5db;
+  border-radius: 14px;
+  background: #f9fafb;
+  font-weight: 400;
+}
+
+.tile-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tile-preview-small {
+  width: 110px;
+  margin-top: 8px;
+}
+
+/* ---------- settings ---------- */
+
+.settings-form {
+  max-width: 640px;
+}
+
+.settings-form .btn-primary {
+  margin-top: 22px;
+}
+
+.map-preview {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  aspect-ratio: 399 / 216;
+  max-width: 400px;
+  border: 1px dashed #d1d5db;
+  border-radius: 12px;
+  background: #f9fafb;
+  font-weight: 400;
+}
+
+.map-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- toast ---------- */
+
+.toast {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+  z-index: 20;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.toast.is-error {
+  background: var(--danger);
+}
+
+.toast.is-ok {
+  background: var(--ok);
+}
+
+/* ---------- wider screens ---------- */
+
+@media (min-width: 700px) {
+  .toolbar {
+    grid-template-columns: 220px 1fr auto;
+    align-items: end;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  }
+}
