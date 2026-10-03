@@ -511,6 +511,37 @@ figure {
   letter-spacing: 0.02em;
   color: var(--navy);
   text-align: right;
+  white-space: pre-line;
+}
+
+/* shown in place of the products when they cannot be loaded */
+.grid-message,
+.grid > noscript {
+  grid-column: 1 / -1;
+}
+
+.grid-message {
+  padding: 6rem 2rem;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.grid-message-title {
+  margin-bottom: 0.6rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.grid-message-retry {
+  width: fit-content;
+  margin: 2rem auto 0;
+  padding: 0 2.5rem;
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
 }
 
 .products .wrap {

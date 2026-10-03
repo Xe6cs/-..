@@ -10,11 +10,17 @@
   var KEY = 'bainbag-vt';
   var root = document.documentElement;
 
-  // Loading screen: stays up until every image, stylesheet, script and font has loaded.
+  // Loading screen: stays up until every image, stylesheet, script and font has loaded,
+  // plus anything a page registers with bainbagWaitFor() (e.g. products from Supabase).
   var LOADER_SAFETY_MS = 30000; // never trap visitors behind the loader if a request hangs
   var loaded = false;
+  var waits = [];
   root.classList.add('is-loading');
   root.setAttribute('aria-busy', 'true');
+
+  window.bainbagWaitFor = function (promise) {
+    waits.push(promise);
+  };
 
   function hideLoader() {
     if (loaded) return;
@@ -24,9 +30,9 @@
   }
 
   window.addEventListener('load', function () {
-    var fonts = document.fonts && document.fonts.ready;
-    if (fonts) fonts.then(hideLoader, hideLoader);
-    else hideLoader();
+    var all = waits.slice();
+    if (document.fonts) all.push(document.fonts.ready);
+    Promise.allSettled(all).then(hideLoader);
   });
   window.addEventListener('pageshow', function (e) {
     if (e.persisted) hideLoader(); // restored from the back/forward cache
